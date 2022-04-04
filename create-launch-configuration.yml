@@ -1,0 +1,64 @@
+Description: >
+  This template deploys a launch configuration
+
+Parameters: 
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+  EC2AMI:
+    Description: AMI to use for our base image
+    Type: String
+  BucketName:
+    Description: Bucket name
+    Type: String
+  ServerSource:
+    Description: The zip file source code of web app
+    Type: String
+  Region:
+    Description: The region
+    Type: String
+Resources: 
+  # Define launch configuration
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      IamInstanceProfile:
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-InsProFile"
+      ImageId: !Ref EC2AMI
+      InstanceType: t2.medium
+      KeyName: hailt23-project2-key
+      SecurityGroups:
+        - Fn::ImportValue: !Sub "${EnvironmentName}-WebApp-SG"
+      BlockDeviceMappings:
+      - DeviceName: "/dev/sdk"
+        Ebs:
+          VolumeSize: '10'
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo apt-get update -y
+          sudo apt-get install apache2 -y
+          sudo systemctl start apache2.service
+          sudo apt-get install unzip
+          sudo apt -y install awscli
+          sudo aws s3api get-object --bucket hailt23-project2-bucket --key udacity-starter-website.zip /var/www/html/udacity-starter-website.zip
+          sudo chmod 2775 /var/www/html
+          cd var/www/html
+          sudo rm -f index.html
+          sudo unzip udacity-starter-website.zip
+          sudo find /var/www -type d -exec chmod 2775 {} \;
+          sudo find /var/www -type f -exec chmod 0664 {} \;
+  
+  # Define auto scaling
+  WebAppAutoScalingGroup: 
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Sub ${EnvironmentName}-WebAppAutoScalingGroup
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      MaxSize: 4
+      MinSize: 4
+      VPCZoneIdentifier: 
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRIV-SN"
+      TargetGroupARNs:
+        - Fn::ImportValue: !Sub "${EnvironmentName}-WebApp-Target-Group"

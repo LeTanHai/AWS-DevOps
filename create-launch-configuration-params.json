@@ -1,0 +1,22 @@
+[
+	{
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "HaiLT23-Project2"
+	},
+    {
+        "ParameterKey": "EC2AMI",
+        "ParameterValue": "ami-07315f74f3fa6a5a3"
+    },
+    {
+        "ParameterKey": "BucketName",
+        "ParameterValue": "hailt23-project2-bucket"
+    },
+    {
+        "ParameterKey": "ServerSource",
+        "ParameterValue": "/udacity-starter-website.zip"
+    },
+    {
+        "ParameterKey": "Region",
+        "ParameterValue": "ap-southeast-1"
+    }
+]
