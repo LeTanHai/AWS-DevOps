@@ -8,12 +8,16 @@
         "ParameterValue": "ami-07315f74f3fa6a5a3"
     },
     {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "hailt23-project2-key"
+    },
+    {
         "ParameterKey": "BucketName",
         "ParameterValue": "hailt23-project2-bucket"
     },
     {
         "ParameterKey": "ServerSource",
-        "ParameterValue": "/udacity-starter-website.zip"
+        "ParameterValue": "udacity-starter-website.zip"
     },
     {
         "ParameterKey": "Region",

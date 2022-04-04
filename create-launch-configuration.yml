@@ -17,6 +17,9 @@ Parameters:
   Region:
     Description: The region
     Type: String
+  KeyName:
+    Description: The key pair
+    Type: String
 Resources: 
   # Define launch configuration
   LaunchConfiguration:
@@ -27,7 +30,7 @@ Resources:
           !Sub "${EnvironmentName}-InsProFile"
       ImageId: !Ref EC2AMI
       InstanceType: t2.medium
-      KeyName: hailt23-project2-key
+      KeyName: !Ref KeyName
       SecurityGroups:
         - Fn::ImportValue: !Sub "${EnvironmentName}-WebApp-SG"
       BlockDeviceMappings:
@@ -42,11 +45,11 @@ Resources:
           sudo systemctl start apache2.service
           sudo apt-get install unzip
           sudo apt -y install awscli
-          sudo aws s3api get-object --bucket hailt23-project2-bucket --key udacity-starter-website.zip /var/www/html/udacity-starter-website.zip
+          sudo aws s3api get-object --bucket ${BucketName} --key ${ServerSource} /var/www/html/${ServerSource}
           sudo chmod 2775 /var/www/html
           cd var/www/html
           sudo rm -f index.html
-          sudo unzip udacity-starter-website.zip
+          sudo unzip ${ServerSource}
           sudo find /var/www -type d -exec chmod 2775 {} \;
           sudo find /var/www -type f -exec chmod 0664 {} \;
   
